@@ -31,6 +31,7 @@ export default function App() {
     <div>
       <h1>Step-by-Step To-Do</h1>
       <TodoForm onAdd={addTodo} />
+      <h2>ToDoList</h2>
       <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
     </div>
   );
