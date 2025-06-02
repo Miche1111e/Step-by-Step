@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-export default function TodoForm({ onAdd }) {
+export default function AddTaskBox({ addTask }) {
   const [text, setText] = useState('');
 
   const handleSubmit = e => {
     e.preventDefault();//dont allow white space 
     if (!text.trim()) return;
-    onAdd(text.trim());
-    setText('');//set back to empty after adding task
+    addTask(text.trim());
+    setText('');//clear input after adding
   };
 
   return (

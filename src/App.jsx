@@ -1,38 +1,38 @@
 import { useState } from 'react';
-import TodoForm from './components/TodoForm';
-import TodoList from './components/TodoList';
+import AddTaskBox from './components/AddTaskBox';
+import TaskList from './components/TaskList';
 
 
 export default function App() {
-  const [todos, setTodos] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
-  const addTodo = text => {
-    const newItem = {
-      id: Date.now(),
-      text,
-      done: false
-    };
-    setTodos(prev => [newItem, ...prev]);
-  };
+  function addTask(text) {
+    const newTask= { id: Date.now(), text, done: false };
+    setTasks(prev => [newTask, ...prev]);
+  }
 
-  const toggleTodo = id => {
-    setTodos(prev =>
-      prev.map(todo =>
-        todo.id === id ? { ...todo, done: !todo.done } : todo
-      )
-    );
-  };
+  function completeTask(id) {
+    setTasks(prev => 
+      prev.map(task => {
+        if(task.id === id) {
+          return {id: task.id, text: task.text, done: !task.done };
+        } else {
+          return task;
+        }
+      })
+    )
+  }
 
-  const deleteTodo = id => {
-    setTodos(prev => prev.filter(todo => todo.id !== id));
-  };
+  function deleteTask(id) {
+    setTasks(prev => prev.filter(task => task.id !== id));
+  }
 
   return (
     <div>
-      <h1>Step-by-Step To-Do</h1>
-      <TodoForm onAdd={addTodo} />
-      <h2>ToDoList</h2>
-      <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
+      <h1>Step-by-Step</h1>
+      <AddTaskBox addTask={addTask}/>
+      <h2>TaskList</h2>
+      <TaskList tasks={tasks} complete={completeTask} deleteTask={deleteTask}/>
     </div>
   );
 }
