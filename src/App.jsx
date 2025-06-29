@@ -6,6 +6,17 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import { db } from './firebase';
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc
+} from "firebase/firestore";
 
 
 export default function App() {
@@ -22,31 +33,41 @@ export default function App() {
 
   function authChange(currUser) {
     setUser(currUser);
+
+    if (currUser) {
+      const q = query(collection(db, "tasks"), where("uid", "==", currUser.uid));
+      onSnapshot(q, (snapshot) => {
+        const userTasks = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTasks(userTasks);
+      });
+    } else {
+      setTasks([]);
+    }
   }
 
   function logOut() {
     signOut(auth);
   }
 
-  function addTask(text, category) {
-    const newTask= { id: Date.now(), text, done: false, category};
-    setTasks(prev => [newTask, ...prev]);
+  async function addTask(text, category) {
+    const newTask= { text, done: false, category, uid: user.uid, createdAt: Date.now()};
+    await addDoc(collection(db, "tasks"), newTask);
   }
 
-  function completeTask(id) {
-    setTasks(prev => 
-      prev.map(task => {
-        if(task.id === id) {
-          return {id: task.id, text: task.text, done: !task.done };
-        } else {
-          return task;
-        }
+  async function completeTask(id) {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      await updateDoc(doc(db, "tasks", id), {
+        done: !task.done
       })
-    );
+    }
   }
 
-  function deleteTask(id) {
-    setTasks(prev => prev.filter(task => task.id !== id));
+  async function deleteTask(id) {
+    await deleteDoc(doc(db, "tasks", id));
   }
 
   if (!user) {
