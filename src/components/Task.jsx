@@ -1,7 +1,7 @@
 export default function Task({ task, complete, deleteTask }) {
   return (
     <div>
-      <label>
+      <label style={{textDecoration: task.done ? 'line-through' : 'none'}}>
         {task.text}
         <input
           type="checkbox"
