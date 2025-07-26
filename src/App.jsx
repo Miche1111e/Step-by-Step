@@ -27,9 +27,29 @@ export default function App() {
   const [showSignUp, setShowSignUp] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, authChange);
+    const unsubscribe = onAuthStateChanged(auth, (currUser) => {
+      setUser(currUser);
+    });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+  if (!user) {
+    setTasks([]);
+    return;
+  }
+
+  const q = query(collection(db, "tasks"), where("uid", "==", user.uid));
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const userTasks = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    setTasks(userTasks);
+  });
+
+  return () => unsubscribe(); // Clean up listener on unmount or user change
+}, [user]);
 
   function authChange(currUser) {
     setUser(currUser);
