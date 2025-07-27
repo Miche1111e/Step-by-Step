@@ -1,0 +1,19 @@
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #7a7a7a;
+  transition: color 0.2s ease;
+  margin-left: 8px;
+}
+
+.delete-btn:hover {
+  color: #c9302c;
+}
+
+.complete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+}

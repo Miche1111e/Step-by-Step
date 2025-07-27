@@ -10,15 +10,12 @@ export default function InputPanel({ addTask, categories, addCategory }) {
     const trimmedText = text.trim();
     const trimmedCategory = category.trim();
     if (!trimmedText) return;
-
     addTask(trimmedText, trimmedCategory);
 
-    // If category is non-empty and new, add it to Firestore
     if (trimmedCategory && !categories.includes(trimmedCategory)) {
       addCategory(trimmedCategory);
     }
 
-    // Clear inputs
     setText('');
     setCategory('');
   };
@@ -28,7 +25,7 @@ export default function InputPanel({ addTask, categories, addCategory }) {
       <input
         type="text"
         value={text}
-        placeholder="Add task title"
+        placeholder="Add task"
         onChange={e => setText(e.target.value)}
       />
       <input

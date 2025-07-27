@@ -113,15 +113,19 @@ export default function App() {
         <div className="card-grid">
           {categories
             .filter(c => c.trim() !== '')
-            .map(category => (
-            <CategoryBox
-              key={category}
-              category={category}
-              tasks={tasks.filter(task => task.category === category)}
-              complete={completeTask}
-              deleteTask={deleteTask}
-            />
-          ))}
+            .map(category => {
+              const tasksInBox = tasks.filter(task => task.category === category);
+              if (category.trim() === '' || tasksInBox.length === 0) return null;
+              return (
+                <CategoryBox
+                  key={category}
+                  category={category}
+                  tasks={tasks.filter(task => task.category === category)}
+                  complete={completeTask}
+                  deleteTask={deleteTask}
+                />
+              );
+          })}
         </div>
     </Dashboard>
   );
