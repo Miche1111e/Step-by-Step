@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import AddTaskBox from './components/AddTaskBox';
 import TaskList from './components/TaskList';
 import CategoryBox from './components/CategoryBox';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from './firebase';
+import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import InputPanel from './components/InputPanel';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
 import { db } from './firebase';
 import {
   collection,
@@ -21,52 +22,51 @@ import {
 
 export default function App() {
   const [tasks, setTasks] = useState([]);
-  console.log(tasks);
-  const categories = ["Work", "School", "Exercise", "Groceries", "Others"];
+  const [categories, setCategories] = useState([]);
   const [user, setUser] = useState(null);
   const [showSignUp, setShowSignUp] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currUser) => {
-      setUser(currUser);
-    });
+    const unsubscribe = onAuthStateChanged(auth, setUser);
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-  if (!user) {
-    setTasks([]);
-    return;
-  }
-
-  const q = query(collection(db, "tasks"), where("uid", "==", user.uid));
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const userTasks = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    setTasks(userTasks);
-  });
-
-  return () => unsubscribe(); // Clean up listener on unmount or user change
-}, [user]);
-
-  function authChange(currUser) {
-    setUser(currUser);
-
-    if (currUser) {
-      const q = query(collection(db, "tasks"), where("uid", "==", currUser.uid));
-      onSnapshot(q, (snapshot) => {
-        const userTasks = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setTasks(userTasks);
-      });
-    } else {
+    if (!user) {
       setTasks([]);
+      return;
     }
-  }
+
+    const q = query(collection(db, "tasks"), where("uid", "==", user.uid));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const userTasks = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setTasks(userTasks);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      setCategories([]);
+      return;
+    }
+
+    const q = query(collection(db, "categories"), where("uid", "==", user.uid));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const userCategories = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setCategories(userCategories.map(c => c.name));
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
 
   function logOut() {
     signOut(auth);
@@ -90,23 +90,30 @@ export default function App() {
     await deleteDoc(doc(db, "tasks", id));
   }
 
+  async function addCategory(name) {
+    await addDoc(collection(db, "categories"), {
+      name,
+      uid: user.uid,
+      createdAt: Date.now()
+    });
+  }
+
   if (!user) {
     return showSignUp ? (
       <Signup onToggle={() => setShowSignUp(false)} />
-    
     ) : (
       <Login onToggle={() => setShowSignUp(true)} />
     );
   }
 
   return (
-    <div>
-      <h1>Step-by-Step</h1>
-      <button onClick={logOut}>LogOut</button>
-      <AddTaskBox addTask={addTask} categories={categories} />
-      <h2>TaskList</h2>
+    <Dashboard user= {user} logOut={logOut}>
+      <InputPanel addTask={addTask} categories={categories} addCategory={addCategory} />
+      <h2>To-Do List</h2>
         <div className="card-grid">
-          {categories.map(category => (
+          {categories
+            .filter(c => c.trim() !== '')
+            .map(category => (
             <CategoryBox
               key={category}
               category={category}
@@ -116,6 +123,6 @@ export default function App() {
             />
           ))}
         </div>
-    </div>
+    </Dashboard>
   );
 }
