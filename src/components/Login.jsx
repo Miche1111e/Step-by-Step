@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
+import './Login.css';
 
 export default function Login({ onToggle }) {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function Login({ onToggle }) {
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleLogin} className='login-form'>
       <h2>Login</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <input

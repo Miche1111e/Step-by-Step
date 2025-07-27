@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
+import './Signup.css';
 
 export default function Signup({ onToggle }) {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function Signup({ onToggle }) {
   };
 
   return (
-    <form onSubmit={handleSignup}>
+    <form onSubmit={handleSignup} className='signup-form'>
       <h2>Sign Up</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <input
