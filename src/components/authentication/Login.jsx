@@ -1,7 +1,7 @@
 // src/components/Login.jsx
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth } from '../../firebase';
 import './Login.css';
 
 export default function Login({ onToggle }) {

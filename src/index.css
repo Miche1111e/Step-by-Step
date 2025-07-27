@@ -12,6 +12,6 @@ body {
 
 #root {
   width: 100%;
-  max-width: 400px; /* or whatever max width you prefer */
+  max-width: 600px; /* or whatever max width you prefer */
   padding: 16px;
 }

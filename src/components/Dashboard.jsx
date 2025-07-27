@@ -1,5 +1,5 @@
-import { LogOut } from 'lucide-react'; // using Lucide icons
-import './Dashboard.css'; // for styling (optional)
+import { LogOut } from 'lucide-react';
+import './Dashboard.css'; 
 
 export default function Dashboard({ user, logOut, children }) {
   return (

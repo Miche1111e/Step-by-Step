@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import TaskList from './components/TaskList';
 import CategoryBox from './components/CategoryBox';
 import Dashboard from './components/Dashboard';
-import Login from './components/Login';
-import Signup from './components/Signup';
+import Login from './components/authentication/Login';
+import Signup from './components/authentication/Signup';
 import InputPanel from './components/InputPanel';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';

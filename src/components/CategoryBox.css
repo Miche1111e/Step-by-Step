@@ -1,5 +1,5 @@
 .categoryBox {
-  width: 250px;
+  width: 300px;
   padding: 12px 20px 16px 20px;  
   border-radius: 20px;
   background-color: #f3f3f3;
@@ -13,5 +13,5 @@
 .categoryBox h2 {
   margin-top: 0;
   margin-bottom: 12px;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
